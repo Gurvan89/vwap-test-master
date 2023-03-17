@@ -19,6 +19,11 @@ public class VwapTrigger implements PricingDataListener, MarketDataListener {
   private static final Logger log = LogManager.getLogger(VwapTrigger.class);
 
   /**
+   * Collection of products
+   */
+  private HashMap<String, Product> products = new HashMap<String, Product>();
+
+  /**
    * This constructor is mainly available to ease unit test by not having to
    * provide a VwapTriggerListener
    */
@@ -31,8 +36,6 @@ public class VwapTrigger implements PricingDataListener, MarketDataListener {
   public VwapTrigger(VwapTriggerListener vwapTriggerListener) {
     this.vwapTriggerListener = vwapTriggerListener;
   }
-
-  private HashMap<String, Product> products = new HashMap<String, Product>();
 
   @Override
   public void transactionOccurred(String productId, long quantity, double price) {
