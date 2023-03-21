@@ -1,13 +1,14 @@
 package com.hsoft.practice;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.hsoft.api.MarketDataListener;
 import com.hsoft.api.PricingDataListener;
 import com.hsoft.api.VwapTriggerListener;
 import com.hsoft.model.Product;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Entry point for the candidate to resolve the exercise
@@ -20,8 +21,9 @@ public class VwapTrigger implements PricingDataListener, MarketDataListener {
 
   /**
    * Collection of products
+   * Use a concurrent hash map in order to provide a thread-safe map
    */
-  private HashMap<String, Product> products = new HashMap<String, Product>();
+  private ConcurrentHashMap<String, Product> products = new ConcurrentHashMap<String, Product>();
 
   /**
    * This constructor is mainly available to ease unit test by not having to
@@ -67,6 +69,7 @@ public class VwapTrigger implements PricingDataListener, MarketDataListener {
   /**
    * Apply the wrap triggered if necessary.
    * In any case save the last update of the product
+   * 
    * @param product Provided product
    */
   public void applyVwapTriggered(Product product) {
@@ -74,7 +77,7 @@ public class VwapTrigger implements PricingDataListener, MarketDataListener {
       this.vwapTriggerListener.vwapTriggered(product.getProductId(), product.getCalculatedVwap(),
           product.getFairValue());
     }
-    products.put(product.getProductId(), product);
+    products.putIfAbsent(product.getProductId(), product);
   }
 
 }

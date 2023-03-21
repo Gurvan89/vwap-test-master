@@ -42,28 +42,30 @@ public class Product {
 
     /**
      * Add a transaction to the collection
+     * Use the key word synchronized to be sure one thread per instance of the class can execute this method.
      * @param quantity
      * @param price
      */
-    public void addTransaction(long quantity, double price) {
+    public synchronized void addTransaction(long quantity, double price) {
         transactions.add(new Transaction(quantity, price));
     }
 
     /**
      * Check if the vwap is greater than the fair value
+     * Use the key word synchronized to be sure one thread per instance of the class can execute this method.
      * @return
      */
-    public boolean isVwapGreaterThanFairValue() {
+    public synchronized boolean isVwapGreaterThanFairValue() {
         return !this.transactions.isEmpty() && this.fairValue > 0 && this.getCalculatedVwap() > this.fairValue;
     }
 
     /**
      * Get the calculated Wrap based on the last 5 transactions
      * If less than 5 transactions the calculation is based on all
-     * 
+     * Use the key word synchronized to be sure one thread per instance of the class can execute this method.
      * @return the calculated Vwap
      */
-    public double getCalculatedVwap() {
+    public synchronized double getCalculatedVwap() {
         List<Transaction> lastFiveTransactions = this.transactions.size() > 5
                 ? this.transactions.subList(this.transactions.size() - 5, this.transactions.size())
                 : this.transactions;
